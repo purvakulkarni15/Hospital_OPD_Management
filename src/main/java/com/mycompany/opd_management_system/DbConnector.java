@@ -4,20 +4,20 @@ import java.util.ArrayList;
 
 public class DbConnector {
 
-    /*private static ArrayList<Doctor> doctorTable;
+    private static ArrayList<Doctor> doctorTable;
     private static ArrayList<Hospital>hospitalTable;
     private static ArrayList<Patient>patientTable;
-    private static ArrayList<Appointment>appointmentTable;*/
+    private static ArrayList<Appointment>appointmentTable;
 
     static{
-        /*doctorTable = new ArrayList<>();
+        doctorTable = new ArrayList<>();
         hospitalTable = new ArrayList<>();
         patientTable = new ArrayList<>();
-        appointmentTable =  new ArrayList<>();*/
+        appointmentTable =  new ArrayList<>();
     }
 
     public static String addToHospitalTable(Hospital hospital){
-        /*int hospitalId;
+        int hospitalId;
         if(hospitalTable.isEmpty()){
             hospitalId = 1;
         }else {
@@ -25,12 +25,12 @@ public class DbConnector {
         }
         hospital.setHospitalId(hospitalId);
         hospitalTable.add(hospital);
-        return "Data added successfully";*/
+        return "Data added successfully";
     }
 
     public static String addToDoctorTable(Doctor doctor){
 
-        /*int doctorId;
+        int doctorId;
         if(doctorTable.isEmpty()){
             doctorId = 1;
         }else {
@@ -39,11 +39,11 @@ public class DbConnector {
         doctor.setDoctorId(doctorId);
         doctorTable.add(doctor);
 
-        return "Data added successfully";*/
+        return "Data added successfully";
     }
 
     public static ArrayList<Doctor> getListWhereHospIdEqualsFromDocTab(int hospitalId){
-        /*ArrayList<Doctor> doctorList = new ArrayList<>();
+        ArrayList<Doctor> doctorList = new ArrayList<>();
 
         for(int i = 0; i < doctorTable.size(); i++){
 
@@ -51,11 +51,11 @@ public class DbConnector {
                 doctorList.add(doctorTable.get(i));
             }
         }
-        return doctorList;*/
+        return doctorList;
     }
 
     public static String addToPatientTable(Patient patient){
-        /*int patientId;
+        int patientId;
         if(patientTable.isEmpty()){
             patientId = 1;
         }else {
@@ -64,74 +64,86 @@ public class DbConnector {
         patient.setPatientId(patientId);
         patientTable.add(patient);
 
-        return "Data added successfully";*/
+        return "Data added successfully";
     }
 
     public static String addToAppointmentTable(Appointment appointment){
-        //appointmentTable.add(appointment);
+        appointmentTable.add(appointment);
         return "Data added successfully";
     }
 
     public static int getIdWhereNameEqualsFromHospTab(String hospitalName){
-        /*for(int i = 0; i < hospitalTable.size(); i++){
+        for(int i = 0; i < hospitalTable.size(); i++){
 
             if(hospitalTable.get(i).getName().equals(hospitalName)){
                return hospitalTable.get(i).getHospitalId();
             }
         }
-        return -1;*/
+        return -1;
     }
 
     public static Doctor getAllWhereNameAndHospIdEqualsFromDocTab(String doctorName, int hospitalId){
 
-        /*for(int i = 0; i < doctorTable.size(); i++){
+        for(int i = 0; i < doctorTable.size(); i++){
             if(doctorTable.get(i).getName().equals(doctorName) && doctorTable.get(i).getHospitalId() == hospitalId){
                 return doctorTable.get(i);
             }
         }
-        return null;*/
+        return null;
     }
 
     public static int getCountWhereSlotEqualsFromAppTab(String timeslot){
         int count = 0;
 
-        /*for(int i = 0; i < appointmentTable.size(); i++){
+        for(int i = 0; i < appointmentTable.size(); i++){
             if(appointmentTable.get(i).getTimeslot().equals(timeslot)){
                 count++;
             }
-        }*/
+        }
 
         return count;
     }
 
-    public static ArrayList<Appointment> getAllWhereSlotEquals(String timeslot){
+    public static ArrayList<Appointment> getAllWhereSlotEqualsFromAppTab(String timeslot){
         ArrayList<Appointment>appointmentList = new ArrayList<>();
 
-        /*for(int i = 0; i < appointmentTable.size(); i++){
+        for(int i = 0; i < appointmentTable.size(); i++){
             if(appointmentTable.get(i).getTimeslot().equals(timeslot)){
                 appointmentList.add(appointmentTable.get(i));
             }
-        }*/
+        }
         return appointmentList;
     }
 
-    public static Patient getAllWherePatIdEqualsFromPatTable(int patientId){
-        /*for(int i = 0; i < patientTable.size(); i++){
-            if(patientTable.get(i).getPatientId() == patientId){
-                return patientTable.get(i);
-            }
-        }*/
-        return null;
-    }
-
     public static String updateAppointmentTab(int hospitalId, int patientId, int doctorId, Appointment appointment){
-        /*for(int i = 0; i < appointmentTable.size(); i++){
+        for(int i = 0; i < appointmentTable.size(); i++){
             if(appointmentTable.get(i).getPatientId() == patientId && appointmentTable.get(i).getHospitalId() == hospitalId && appointmentTable.get(i).getDoctorId() == doctorId){
                 appointmentTable.remove(i);
                 appointmentTable.add(i, appointment);
             }
-        }*/
+        }
 
         return "Updated Appointment table successfully";
+    }
+
+    public static ArrayList<Appointment> getAppWhereDocIdAndSlotEqualsFromAppTab(int doctorId, String slot){
+
+        ArrayList<Appointment> appointmentList = new ArrayList<>();
+
+        for(int i = 0; i < appointmentTable.size(); i++ ){
+            if(appointmentTable.get(i).getDoctorId()==doctorId && appointmentTable.get(i).getTimeslot().equals(slot)){
+                appointmentList.add(appointmentTable.get(i));
+            }
+        }
+
+        return appointmentList;
+    }
+
+    public static Patient getAllWherePatIdEqualsFromPatTab(int patientId){
+        return patientTable.get(patientId);
+    }
+
+    public static Doctor getAllWhereIdEqualsFromDocTab(int doctorId){
+        return doctorTable.get(doctorId);
     }
 }
