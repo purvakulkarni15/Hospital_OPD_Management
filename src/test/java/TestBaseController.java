@@ -38,8 +38,7 @@ public class TestBaseController {
 
     @Test
     public void testAddHospitalData(){
-        String json = "{'HospitalName':'ABC','DoctorList':[{'DoctorName':'Dr. XYZ', 'DoctorSpeciality':'medicine', 'StartTime':'11:00:00 AM', 'EndTime':'12:00:00 PM', 'SlotTimeInMin':30, 'Capacity':1}, {'DoctorName':'Dr. ABC', 'DoctorSpeciality':'medicine', 'StartTime':'11:00:00 AM', 'EndTime':'12:00:00 PM', 'SlotTimeInMin':30, 'Capacity':1}, {'DoctorName':'Dr. PQR', 'DoctorSpeciality':'medicine', 'StartTime':'11:00:00 AM', 'EndTime':'12:00:00 PM', 'SlotTimeInMin':30, 'Capacity':1}]}";
-
+        String json = "{'HospitalName':'ABC','DoctorsList':[{'DoctorName':'Dr. XYZ', 'DoctorSpeciality':'medicine', 'StartTime':'11:00:00 AM', 'EndTime':'12:00:00 PM', 'SlotTimeInMin':30, 'Capacity':1}, {'DoctorName':'Dr. ABC', 'DoctorSpeciality':'medicine', 'StartTime':'11:00:00 AM', 'EndTime':'12:00:00 PM', 'SlotTimeInMin':30, 'Capacity':1}, {'DoctorName':'Dr. PQR', 'DoctorSpeciality':'medicine', 'StartTime':'11:00:00 AM', 'EndTime':'12:00:00 PM', 'SlotTimeInMin':30, 'Capacity':1}]}";
         baseController.addHospitalData(json);
 
         ArrayList<Hospital> hospitalTable = DbConnector.getHospitalTable();

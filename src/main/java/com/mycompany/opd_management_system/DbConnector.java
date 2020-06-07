@@ -20,13 +20,60 @@ public class DbConnector {
         adminTable = new ArrayList<>();
 
         populateAdminTable();
+        populateDoctorData();
+        populateHospitalData();
+        populatePatientData();
+        populateAppointmentData();
     }
 
     private void populateAdminTable(){
         adminTable.add(new Admin(0, 0, "purva.1497@gmail.com", "123"));
-        adminTable.add(new Admin(0, 1, "purva.1497@gmail.com", "123"));
-        adminTable.add(new Admin(0, 2, "purva.1497@gmail.com", "123"));
-        adminTable.add(new Admin(0, 3, "purva.1497@gmail.com", "123"));
+        adminTable.add(new Admin(0, 1, "yashashree.kolhe@gmail.com", "1234"));
+        adminTable.add(new Admin(0, -1, "suruchi.jadhav@gmail.com", "12345"));
+
+    }
+
+    private void populateHospitalData(){
+        DbConnector.addToHospitalTable(new Hospital(-1,"ABC"));
+        DbConnector.addToHospitalTable(new Hospital(-1, "XYZ"));
+    }
+
+    private void populateDoctorData(){
+        DbConnector.addToDoctorTable(new Doctor(-1,0,"Dr. Sheldon Cooper", "Medicine", "11:00:00 AM", "12:00:00 PM", 15, 5));
+        DbConnector.addToDoctorTable(new Doctor(-1,0,"Dr. Leonard Hofstadter", "Dermatology", "11:00:00 AM", "12:00:00 PM", 15,5));
+        DbConnector.addToDoctorTable(new Doctor(-1,1,"Dr. Howard Wozowski", "Ophthalmology", "11:00:00 AM", "12:00:00 PM", 15,5));
+        DbConnector.addToDoctorTable(new Doctor(-1,1,"Dr. Raj Koothrapali", "Medicine", "11:00:00 AM", "12:00:00 PM", 15,5));
+    }
+
+    private void populatePatientData(){
+        addToPatientTable(new Patient(-1,"Micheal Scott", 40, "male", "fever,cold,cough", "micheal.scott@gmail.com", "9890450990"));
+        DbConnector.addToPatientTable(new Patient(-1,"Dwight Schrute", 32,"male", "ear infection", "dwight.schrute@gmail.com", "9665921888"));
+        DbConnector.addToPatientTable(new Patient(-1,"Pam Beesley", 25,"female", "skin rash", "pam.beesley@gmail.com", "9130564227"));
+        DbConnector.addToPatientTable(new Patient(-1,"Jim Halpert", 28,"male", "fever,cold,cough", "jim.halpert@gmail.com", "9859669448"));
+        }
+
+    private void populateAppointmentData(){
+        Appointment appointment;
+        appointment= new Appointment(-1, 0, 0, 0,"08/06/2020 11:00:00 AM");
+        appointment.setCovidSuspect(true);
+        DbConnector.addToAppointmentTable(appointment);
+
+        appointment = new Appointment(-1, 0, 0, 0,"09/06/2020 11:30:00 AM");
+        appointment.setCovidSuspect(true);
+        DbConnector.addToAppointmentTable(appointment);
+
+        appointment= new Appointment(-1, 0, 1, 1,"08/06/2020 11:00:00 AM");
+        appointment.setCovidSuspect(true);
+        DbConnector.addToAppointmentTable(appointment);
+
+        appointment = new Appointment(-1, 1, 2, 2,"09/06/2020 11:30:00 AM");
+        appointment.setCovidSuspect(true);
+        DbConnector.addToAppointmentTable(appointment);
+
+        appointment = new Appointment(-1, 1, 3, 3,"09/06/2020 11:30:00 AM");
+        appointment.setCovidSuspect(true);
+        DbConnector.addToAppointmentTable(appointment);
+
     }
 
     public static ArrayList<Doctor> getDoctorTable() {
@@ -191,6 +238,16 @@ public class DbConnector {
         return appointmentList;
     }
 
+    public Appointment getAppWherePatIdEqualsFromAppTab(int patientId){
+
+        for(int i = 0; i < appointmentTable.size(); i++ ){
+            if(appointmentTable.get(i).getPatientId() == patientId){
+                return appointmentTable.get(i);
+            }
+        }
+        return null;
+    }
+
     public static int getPatientIdFromEmail(String email){
         for(int i = 0; i < patientTable.size(); i++){
             if(patientTable.get(i).getEMailId().equals(email)){
@@ -286,7 +343,11 @@ public class DbConnector {
         return false;
     }
 
-    public static Patient getAllWherePatIdEqualsFromPatTab(int patientId){
+    public static Hospital getAllWhereIdEqualsFromHospTab(int hospitalId){
+        return hospitalTable.get(hospitalId);
+    }
+
+    public static Patient getAllWhereIdEqualsFromPatTab(int patientId){
         return patientTable.get(patientId);
     }
 

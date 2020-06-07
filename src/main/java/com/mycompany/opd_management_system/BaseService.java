@@ -81,7 +81,7 @@ public class BaseService {
             String message;
 
             String timeslot = getAvailableTimeSlot(doctor, from);
-            Patient patient = dbConnector.getAllWherePatIdEqualsFromPatTab(appointmentList.get(i).getPatientId());
+            Patient patient = dbConnector.getAllWhereIdEqualsFromPatTab(appointmentList.get(i).getPatientId());
 
             notifyPatientByEmail(patient.getEMailId(), patient.getName(), appointmentList.get(i).getTimeslot(), timeslot);
 
