@@ -467,6 +467,7 @@ public class BaseController {
         return  jsonObject.toString();
     }
 
+    @RequestMapping(method = RequestMethod.POST, value = "/getEmergencyList", produces = MediaType.APPLICATION_JSON_VALUE)
     public static String getEmergencyList(int hospitalId){
         ArrayList<Emergency> emergencyList = dbConnector.getListWhereHospIdEqualsFromEmerTab(hospitalId);
 
@@ -485,6 +486,43 @@ public class BaseController {
             }
         }
         return jsonArray.toString();
-
     }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/getAllTimeSlots", produces = MediaType.APPLICATION_JSON_VALUE)
+    public static String getAllTimeSlots(String start, String end, int slotTimeInMin){
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss a");
+        ArrayList<String> slots = new ArrayList<>();
+
+        try {
+
+            Date fromDate = (Date) dateFormat.parse(start);
+            Date toDate = (Date) dateFormat.parse(end);
+
+            Date slot = fromDate;
+
+            long slotTimeinMillis = TimeUnit.MINUTES.toMillis(slotTimeInMin);
+
+            ArrayList<Appointment> appointmentList;
+
+            while (slot.before(toDate)) {
+                slots.add(dateFormat.format(slot));
+                slot = new Date(slot.getTime() + slotTimeinMillis);
+            }
+
+            slots.add(dateFormat.format(toDate));
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        JSONArray jsonArray = new JSONArray();
+
+        for(int i = 0; i < slots.size(); i++){
+            jsonArray.put(slots.get(i));
+        }
+
+        return jsonArray.toString();
+    }
+
 }
