@@ -73,7 +73,7 @@ public class BaseController {
             if(checkPatientId == -1) {
                 dbConnector.addToPatientTable(patient);
             }else{
-                 return "This username is already registered. Please try again with different username.";
+                return "This username is already registered. Please try again with different username.";
             }
         }
 

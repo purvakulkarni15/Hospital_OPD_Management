@@ -50,7 +50,7 @@ public class DbConnector {
         DbConnector.addToPatientTable(new Patient(-1,"Dwight Schrute", 32,"male", "ear infection", "dwight.schrute@gmail.com", "9665921888"));
         DbConnector.addToPatientTable(new Patient(-1,"Pam Beesley", 25,"female", "skin rash", "pam.beesley@gmail.com", "9130564227"));
         DbConnector.addToPatientTable(new Patient(-1,"Jim Halpert", 28,"male", "fever,cold,cough", "jim.halpert@gmail.com", "9859669448"));
-        }
+    }
 
     private void populateAppointmentData(){
         Appointment appointment;
@@ -95,8 +95,8 @@ public class DbConnector {
     public static ArrayList<Emergency> getEmergencyTable() { return emergencyTable; }
 
     /*
-    * Insert Queries
-    */
+     * Insert Queries
+     */
 
     public static int addToHospitalTable(Hospital hospital){
 
@@ -194,8 +194,8 @@ public class DbConnector {
     }
 
     /*
-    * Select Queries
-    */
+     * Select Queries
+     */
 
     public static ArrayList<Hospital> getListFromHospTab(){
         return getHospitalTable();
