@@ -27,29 +27,42 @@ public class DbConnector {
     }
 
     private void populateAdminTable(){
-        adminTable.add(new Admin(0, 0, "purva.1497@gmail.com", "123"));
-        adminTable.add(new Admin(0, 1, "yashashree.kolhe@gmail.com", "1234"));
-        adminTable.add(new Admin(0, -1, "suruchi.jadhav@gmail.com", "12345"));
+        adminTable.add(new Admin(-1, 0, "purva.1497@gmail.com", "123"));
+        adminTable.add(new Admin(-1, 1, "yashashree.kolhe@gmail.com", "1234"));
+        adminTable.add(new Admin(-1, -1, "suruchi.jadhav@gmail.com", "12345"));
 
     }
 
     private void populateHospitalData(){
-        DbConnector.addToHospitalTable(new Hospital(-1,"ABC"));
-        DbConnector.addToHospitalTable(new Hospital(-1, "XYZ"));
+        DbConnector.addToHospitalTable(new Hospital(0,"ABC Hospital"));
+        DbConnector.addToHospitalTable(new Hospital(1, "XYZ Hospital"));
     }
 
     private void populateDoctorData(){
         DbConnector.addToDoctorTable(new Doctor(-1,0,"Dr. Sheldon Cooper", "Medicine", "11:00:00 AM", "12:00:00 PM", 15, 5));
         DbConnector.addToDoctorTable(new Doctor(-1,0,"Dr. Leonard Hofstadter", "Dermatology", "11:00:00 AM", "12:00:00 PM", 15,5));
-        DbConnector.addToDoctorTable(new Doctor(-1,1,"Dr. Howard Wozowski", "Ophthalmology", "11:00:00 AM", "12:00:00 PM", 15,5));
+        DbConnector.addToDoctorTable(new Doctor(-1,1,"Dr. Howard Wolowitz", "Ophthalmology", "11:00:00 AM", "12:00:00 PM", 15,5));
         DbConnector.addToDoctorTable(new Doctor(-1,1,"Dr. Raj Koothrapali", "Medicine", "11:00:00 AM", "12:00:00 PM", 15,5));
     }
 
     private void populatePatientData(){
-        addToPatientTable(new Patient(-1,"Micheal Scott", 40, "male", "fever,cold,cough", "micheal.scott@gmail.com", "9890450990"));
-        DbConnector.addToPatientTable(new Patient(-1,"Dwight Schrute", 32,"male", "ear infection", "dwight.schrute@gmail.com", "9665921888"));
-        DbConnector.addToPatientTable(new Patient(-1,"Pam Beesley", 25,"female", "skin rash", "pam.beesley@gmail.com", "9130564227"));
-        DbConnector.addToPatientTable(new Patient(-1,"Jim Halpert", 28,"male", "fever,cold,cough", "jim.halpert@gmail.com", "9859669448"));
+        Patient patient;
+
+        patient = new Patient(-1,"Micheal Scott", 40, "male", "fever,cold,cough", "micheal.scott@gmail.com", "9890450990");
+        patient.setPassword("1234");
+        addToPatientTable(patient);
+
+        patient = new Patient(-1,"Dwight Schrute", 32,"male", "ear infection", "dwight.schrute@gmail.com", "9665921888");
+        patient.setPassword("12345");
+        addToPatientTable(patient);
+
+        patient = new Patient(-1,"Pam Beesley", 25,"female", "skin rash", "pam.beesley@gmail.com", "9130564227");
+        patient.setPassword("123456");
+        addToPatientTable(patient);
+
+        patient = new Patient(-1,"Jim Halpert", 28,"male", "fever,cold,cough", "jim.halpert@gmail.com", "9859669448");
+        patient.setPassword("1234567");
+        addToPatientTable(patient);
     }
 
     private void populateAppointmentData(){
@@ -58,19 +71,26 @@ public class DbConnector {
         appointment.setCovidSuspect(true);
         DbConnector.addToAppointmentTable(appointment);
 
-        appointment = new Appointment(-1, 0, 0, 0,"09/06/2020 11:30:00 AM");
+        appointment = new Appointment(-1, 0, 1, 0,"08/06/2020 11:00:00 AM");
         appointment.setCovidSuspect(true);
         DbConnector.addToAppointmentTable(appointment);
 
-        appointment= new Appointment(-1, 0, 1, 1,"08/06/2020 11:00:00 AM");
+        appointment= new Appointment(-1, 0, 2, 0,"08/06/2020 11:00:00 AM");
         appointment.setCovidSuspect(true);
         DbConnector.addToAppointmentTable(appointment);
 
-        appointment = new Appointment(-1, 1, 2, 2,"09/06/2020 11:30:00 AM");
+        appointment = new Appointment(-1, 0, 3, 0,"08/06/2020 11:00:00 AM");
         appointment.setCovidSuspect(true);
         DbConnector.addToAppointmentTable(appointment);
 
-        appointment = new Appointment(-1, 1, 3, 3,"09/06/2020 11:30:00 AM");
+        appointment = new Appointment(-1, 0, 0, 1,"08/06/2020 11:00:00 AM");
+        appointment.setCovidSuspect(true);
+
+        appointment = new Appointment(-1, 0, 2, 1,"08/06/2020 11:15:00 AM");
+        appointment.setCovidSuspect(true);
+        DbConnector.addToAppointmentTable(appointment);
+
+        appointment = new Appointment(-1, 0, 3, 1,"08/06/2020 11:15:00 AM");
         appointment.setCovidSuspect(true);
         DbConnector.addToAppointmentTable(appointment);
 
@@ -170,6 +190,7 @@ public class DbConnector {
     public static void updateToPatientTable(Patient patient){
         for(int i = 0; i < patientTable.size(); i++){
             if(patientTable.get(i).getPatientId() == patient.getPatientId()){
+                patient.setPassword(patientTable.get(i).getPassword());
                 patientTable.remove(i);
                 patientTable.add(i, patient);
             }
@@ -336,7 +357,7 @@ public class DbConnector {
     public static boolean checkPatientCredentials(String emailId, String password){
 
         for(int i = 0; i < patientTable.size(); i++) {
-            if (patientTable.get(i).getEMailId().equals(emailId) && adminTable.get(i).getPassword().equals(password)){
+            if (patientTable.get(i).getEMailId().equals(emailId) && patientTable.get(i).getPassword().equals(password)){
                 return true;
             }
         }
@@ -355,4 +376,7 @@ public class DbConnector {
         return doctorTable.get(doctorId);
     }
 
+    public static void setHospIdInAdminTab(int hospitalId, int adminId){
+        adminTable.get(adminId).setHospitalId(hospitalId);
+    }
 }

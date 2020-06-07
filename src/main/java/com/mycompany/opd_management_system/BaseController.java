@@ -1,5 +1,6 @@
 package com.mycompany.opd_management_system;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,7 @@ public class BaseController {
         return String.valueOf(patientId);
     }
 
+
     @RequestMapping(method=RequestMethod.POST, value="/setPatientData", produces = MediaType.APPLICATION_JSON_VALUE)
     public static String addPatientAndAppointmentData(@RequestBody String appointmentObject){
 
@@ -36,6 +38,7 @@ public class BaseController {
         String patientGender = null;
         String patientIllness = null;
         String emailId = null;
+        String password = null;
         String contactNumber = null;
         String timeslot = null;
         String date = null;
@@ -51,15 +54,26 @@ public class BaseController {
             patientGender = jsonObject.getString("PatientGender");
             patientIllness = jsonObject.getString("PatientIllness");
             emailId = jsonObject.getString("EmailId");
+            password = jsonObject.getString("Password");
             contactNumber = jsonObject.getString("MobileNumber");
             timeslot = jsonObject.getString("Timeslot");
-            date = jsonObject.getString("Date");
+            date = jsonObject.getString("DateString");
+            timeslot = date+" "+timeslot;
 
         }catch(Exception e){
             e.printStackTrace();
         }
 
-        if(patientId != -1) {
+        if(patientId == -2){
+            Patient patient = new Patient(patientId, patientName, patientAge, patientGender, patientIllness, emailId, contactNumber);
+            patient.setPassword("default123");
+            dbConnector.addToPatientTable(patient);
+            Appointment appointment = new Appointment(-1,hospitalId, patient.getPatientId(), doctorId, timeslot);
+            if(patientIllness.contains("fever") && patientIllness.contains("cough")){
+                appointment.setCovidSuspect(true);
+            }
+            dbConnector.addToAppointmentTable(appointment);
+        }else if(patientId != -1) {
             Patient patient = new Patient(patientId, patientName, patientAge, patientGender, patientIllness, emailId, contactNumber);
             dbConnector.updateToPatientTable(patient);
             Appointment appointment = new Appointment(-1,hospitalId, patientId, doctorId, timeslot);
@@ -67,8 +81,10 @@ public class BaseController {
                 appointment.setCovidSuspect(true);
             }
             dbConnector.addToAppointmentTable(appointment);
-        }else{
+        }
+        else{
             Patient patient = new Patient(patientId, patientName, patientAge, patientGender, patientIllness, emailId, contactNumber);
+            patient.setPassword(password);
             int checkPatientId = DbConnector.getPatientIdFromEmail(emailId);
             if(checkPatientId == -1) {
                 dbConnector.addToPatientTable(patient);
@@ -79,9 +95,8 @@ public class BaseController {
 
         return "Data added successfully";
     }
-
     @RequestMapping(method=RequestMethod.POST, value="/addHospitalData", produces = MediaType.APPLICATION_JSON_VALUE)
-    public static String addHospitalData(@RequestBody  String hospitalObj){
+    public static int addHospitalData(@RequestBody  String hospitalObj){
 
         String hospitalName;
         int hospitalId;
@@ -109,12 +124,13 @@ public class BaseController {
 
                 dbConnector.addToDoctorTable(new Doctor(-1, hospitalId, doctorName, doctorSpeciality, startTime, endTime, slotTimeInMin, capacity));
             }
+            return hospitalId;
 
         }catch(Exception e){
             e.printStackTrace();
         }
 
-        return "Data added successfully";
+        return -1;
     }
 
     @RequestMapping(method=RequestMethod.GET, value="/getHospitalList", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -162,7 +178,6 @@ public class BaseController {
 
         String startStr = date + " " + doctor.getStartTime();
         String endStr = date + " " + doctor.getEndTime();
-        String retVal;
 
         try {
 
@@ -175,7 +190,7 @@ public class BaseController {
             while (slot.before(end)) {
                 if (BaseService.checkIfSlotAvailable(dateFormat.format(slot), doctorId, doctor.getCapacity())) {
                     vacantSlots.add(dateFormat.format(slot));
-                    vacancies.add(doctor.getCapacity() - dbConnector.getCountWhereSlotAndIdEqualsFromAppTab(doctorId, dateFormat.format(slot)));
+                    vacancies.add(doctor.getCapacity() - dbConnector.getCountWhereSlotAndIdEqualsFromAppTab(doctorId, dateFormat.format(slot).toUpperCase()));
                 }
                 slot = new Date(slot.getTime() + slotTimeinMillis);
             }
@@ -211,9 +226,9 @@ public class BaseController {
                 object.put("DoctorId", String.valueOf(doctorList.get(i).getDoctorId()));
                 object.put("DoctorName", doctorList.get(i).getName());
                 object.put("DoctorSpeciality", doctorList.get(i).getSpeciality());
-                object.put("StartTime", doctorList.get(i).getStartTime());
-                object.put("EndTime", doctorList.get(i).getEndTime());
-                object.put("SlotTimeInMin", doctorList.get(i).getSlotTimeInMin());
+                object.put("OPDStartTimeString", doctorList.get(i).getStartTime());
+                object.put("OPDEndTimeString", doctorList.get(i).getEndTime());
+                object.put("SlotDuration", doctorList.get(i).getSlotTimeInMin());
                 object.put("Capacity", doctorList.get(i).getCapacity());
                 jsonArray.put(object);
 
@@ -225,7 +240,8 @@ public class BaseController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/getPatientList", produces = MediaType.APPLICATION_JSON_VALUE)
-    public static String getPatientList(int doctorId, String timeslot){
+    public static String getPatientList(int doctorId, String date, String timeslot){
+        timeslot = date+" "+timeslot;
         ArrayList<Appointment> appointmentList = dbConnector.getAppWhereDocIdAndSlotEqualsFromAppTab(doctorId, timeslot);
         ArrayList<Patient> patientList = new ArrayList<>();
 
@@ -241,7 +257,7 @@ public class BaseController {
             JSONObject object = new JSONObject();
 
             try {
-
+                object.put("AppointmentNumber", patientList.get(i).getPatientId());
                 object.put("PatientId", patientList.get(i).getPatientId());
                 object.put("PatientName", patientList.get(i).getName());
                 object.put("PatientAge", patientList.get(i).getAge());
@@ -264,7 +280,7 @@ public class BaseController {
 
         Doctor doctor = dbConnector.getAllWhereIdEqualsFromDocTab(doctorId);
 
-        dbConnector.addToEmergencyTable(new Emergency(doctorId, doctor.getHospitalId(), doctor.getName(), date, fromStr, toStr));
+        dbConnector.addToEmergencyTable(new Emergency(doctorId, doctor.getHospitalId(), doctor.getName(), fromStr, toStr, date));
 
         fromStr = date+" "+fromStr;
         toStr = date+" "+toStr;
@@ -283,14 +299,14 @@ public class BaseController {
             while(slot.before(toDate)){
                 slot = new Date(slot.getTime()+slotTimeinMillis);
                 //System.out.println(dateFormat.format(slot));
-                appointmentList = dbConnector.getAppWhereDocIdAndSlotEqualsFromAppTab(doctor.getDoctorId(), dateFormat.format(slot));
+                appointmentList = dbConnector.getAppWhereDocIdAndSlotEqualsFromAppTab(doctor.getDoctorId(), dateFormat.format(slot).toUpperCase());
                 BaseService.rescheduleAppointmentsAndNotify(appointmentList, dateFormat.format(toDatePlusSlotTime), doctor);
             }
 
-            appointmentList = dbConnector.getAppWhereDocIdAndSlotEqualsFromAppTab(doctor.getDoctorId(), dateFormat.format(slot));
+            appointmentList = dbConnector.getAppWhereDocIdAndSlotEqualsFromAppTab(doctor.getDoctorId(), dateFormat.format(fromDate).toUpperCase());
 
             for(int i = 0; i < appointmentList.size(); i++) {
-                appointmentList.get(i).setTimeslot(dateFormat.format(new Date(fromDate.getTime()+slotTimeinMillis)));
+                appointmentList.get(i).setTimeslot(dateFormat.format(new Date(toDate.getTime())).toUpperCase());
                 DbConnector.updateAppointmentTab(appointmentList.get(i));
             }
 
@@ -301,7 +317,7 @@ public class BaseController {
         return "Data stored successfully";
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/getNextAvailableSlot", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET, value = "/getNextAvailableSlot", produces = MediaType.APPLICATION_JSON_VALUE)
     public static String getNextAvailableSlot(int doctorId){
 
         String availableTimeslot="";
@@ -322,7 +338,7 @@ public class BaseController {
         return availableTimeslot;
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/getAppointments", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET, value = "/getAppointments", produces = MediaType.APPLICATION_JSON_VALUE)
     public static String getAppointmentList(int patientId){
         ArrayList<Appointment> appointmentList = dbConnector.getListWherePatIdEqualsFromAppTab(patientId);
         JSONArray jsonArray = new JSONArray();
@@ -360,7 +376,7 @@ public class BaseController {
         return "Deleted successfully";
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/getPushedAppointmentList", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET, value = "/getPushedAppointmentList", produces = MediaType.APPLICATION_JSON_VALUE)
     public static String getPushedAppointmentList(int patientId){
         ArrayList<Appointment> pushedAppointmentList =  new ArrayList<>();
 
@@ -372,7 +388,7 @@ public class BaseController {
 
             try {
 
-                object.put("AppointmentId", pushedAppointmentList.get(i).getAppointmentId());
+                object.put("AppointmentNumber", pushedAppointmentList.get(i).getAppointmentId());
                 object.put("Timeslot", pushedAppointmentList.get(i).getTimeslot());
 
                 jsonArray.put(object);
@@ -385,7 +401,7 @@ public class BaseController {
         return jsonArray.toString();
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/getCancelledAppointmentList", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET, value = "/getCancelledAppointmentList", produces = MediaType.APPLICATION_JSON_VALUE)
     public static String getCancelledAppointmentList(int patientId){
         ArrayList<Appointment> cancelledAppointmentList =  new ArrayList<>();
 
@@ -397,7 +413,7 @@ public class BaseController {
 
             try {
 
-                object.put("AppointmentId", cancelledAppointmentList.get(i).getAppointmentId());
+                    object.put("AppointmentNumber", cancelledAppointmentList.get(i).getAppointmentId());
                 object.put("Timeslot", cancelledAppointmentList.get(i).getTimeslot());
 
                 jsonArray.put(object);
@@ -410,7 +426,7 @@ public class BaseController {
         return jsonArray.toString();
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/getCovidSuspectsList", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET, value = "/getCovidSuspectsList", produces = MediaType.APPLICATION_JSON_VALUE)
     public static String getCovidSuspectsList(int hospitalId, String date){
         ArrayList<Appointment> covidSuspectList =  new ArrayList<>();
 
@@ -422,7 +438,7 @@ public class BaseController {
 
             try {
 
-                object.put("AppointmentId", covidSuspectList.get(i).getAppointmentId());
+                object.put("AppointmentNumber", covidSuspectList.get(i).getAppointmentId());
                 object.put("Timeslot", covidSuspectList.get(i).getTimeslot());
                 object.put("DoctorId", covidSuspectList.get(i).getDoctorId());
                 object.put("DoctorName", dbConnector.getAllWhereIdEqualsFromDocTab(covidSuspectList.get(i).getDoctorId()));
@@ -437,20 +453,20 @@ public class BaseController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/checkAdminLogin", produces = MediaType.APPLICATION_JSON_VALUE)
-    public static boolean checkAdminLogin(String emailId, String password){
-
-        return dbConnector.checkAdminCredentials(emailId, password);
+    public static boolean checkAdminLogin(@RequestBody String body) throws JSONException {
+        JSONObject jsonObject = new JSONObject(body);
+        return dbConnector.checkAdminCredentials(jsonObject.getString("emailId"), jsonObject.getString("password"));
 
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/checkPatientLogin", produces = MediaType.APPLICATION_JSON_VALUE)
-    public static boolean checkPatientLogin(String emailId, String password){
-
-        return dbConnector.checkPatientCredentials(emailId, password);
+    public static boolean checkPatientLogin(@RequestBody String body) throws JSONException {
+        JSONObject jsonObject = new JSONObject(body);
+        return dbConnector.checkPatientCredentials(jsonObject.getString("emailId"), jsonObject.getString("password"));
 
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/getAdminDetails", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET, value = "/getAdminDetails", produces = MediaType.APPLICATION_JSON_VALUE)
     public static String getAdminDetails(String emailId){
 
         Admin admin = dbConnector.getAdminWhereEmailIdEqualsFromAdminTab(emailId);
@@ -467,6 +483,7 @@ public class BaseController {
         return  jsonObject.toString();
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/getEmergencyList", produces = MediaType.APPLICATION_JSON_VALUE)
     public static String getEmergencyList(int hospitalId){
         ArrayList<Emergency> emergencyList = dbConnector.getListWhereHospIdEqualsFromEmerTab(hospitalId);
 
@@ -476,8 +493,8 @@ public class BaseController {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("DoctorId", emergencyList.get(i).getDoctorId());
                 jsonObject.put("DoctorName", emergencyList.get(i).getDoctorName());
-                jsonObject.put("From", emergencyList.get(i).getFrom());
-                jsonObject.put("To", emergencyList.get(i).getTo());
+                jsonObject.put("UnavailableFrom", emergencyList.get(i).getFrom());
+                jsonObject.put("UnavailableTo", emergencyList.get(i).getTo());
 
                 jsonArray.put(jsonObject);
             }catch (Exception e){
@@ -486,5 +503,50 @@ public class BaseController {
         }
         return jsonArray.toString();
 
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/setHospitalId", produces = MediaType.APPLICATION_JSON_VALUE)
+    public static String setHospitalId(int hospitalId, int adminId){
+        dbConnector.setHospIdInAdminTab(hospitalId, adminId);
+
+        return "Admin table updated successfully";
+
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/getAllTimeSlots", produces = MediaType.APPLICATION_JSON_VALUE)
+    public static String getAllTimeSlots(String start, String end, String slotTimeInMinStr){
+
+        int slotTimeInMin = Integer.valueOf(slotTimeInMinStr);
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss a");
+        ArrayList<String> slots = new ArrayList<>();
+
+        try {
+
+            Date fromDate = (Date) dateFormat.parse(start);
+            Date toDate = (Date) dateFormat.parse(end);
+
+            Date slot = fromDate;
+
+            long slotTimeinMillis = TimeUnit.MINUTES.toMillis(slotTimeInMin);
+
+            ArrayList<Appointment> appointmentList;
+
+            while (slot.before(toDate)) {
+                slots.add(dateFormat.format(slot));
+                slot = new Date(slot.getTime() + slotTimeinMillis);
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        JSONArray jsonArray = new JSONArray();
+
+        for(int i = 0; i < slots.size(); i++){
+            jsonArray.put(slots.get(i));
+        }
+
+        return jsonArray.toString();
     }
 }

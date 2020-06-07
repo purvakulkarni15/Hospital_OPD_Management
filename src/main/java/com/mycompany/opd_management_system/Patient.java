@@ -20,6 +20,14 @@ public class Patient {
         this.contactNumber = contactNumber;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
     public int getPatientId() {
         return patientId;
     }
