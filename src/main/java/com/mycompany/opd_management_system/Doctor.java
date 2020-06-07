@@ -1,15 +1,14 @@
 package com.mycompany.opd_management_system;
 
 public class Doctor {
-    private static int doctorId;
-    private static int hospitalId;
-    private static String name;
-    private static String speciality;
-    private static int slotTimeInMin;
-    private static String startTime;
-    private static String endTime;
-    private static int capacity;
-    private static int currentCapacity;
+    private int doctorId;
+    private int hospitalId;
+    private String name;
+    private String speciality;
+    private int slotTimeInMin;
+    private String startTime;
+    private String endTime;
+    private int capacity;
 
     public Doctor(int doctorId, int hospitalId, String name, String speciality, String startTime, String endTime, int slotTimeInMin, int capacity){
         this.doctorId = doctorId;
@@ -22,49 +21,41 @@ public class Doctor {
         this.capacity = capacity;
     }
 
-    public static int getDoctorId() {
+    public int getDoctorId() {
         return doctorId;
     }
-    public static void setDoctorId(int id) {
+    public void setDoctorId(int id) {
         doctorId = id;
     }
 
-    public static int getHospitalId() {
+    public int getHospitalId() {
         return hospitalId;
     }
 
-    public static String getName() {
+    public String getName() {
         return name;
     }
 
-    public static String getSpeciality() {
+    public String getSpeciality() {
         return speciality;
     }
 
 
-    public static int getSlotTimeInMin() {
+    public int getSlotTimeInMin() {
         return slotTimeInMin;
     }
 
 
-    public static String getStartTime() {
+    public String getStartTime() {
         return startTime;
     }
 
-    public static String getEndTime() {
+    public String getEndTime() {
         return endTime;
     }
 
-    public static int getCapacity() {
+    public int getCapacity() {
         return capacity;
-    }
-
-    public static int getCurrentCapacity() {
-        return currentCapacity;
-    }
-
-    public static void setCurrentCapacity(int currentCapacity) {
-        Doctor.currentCapacity = currentCapacity;
     }
 
 }

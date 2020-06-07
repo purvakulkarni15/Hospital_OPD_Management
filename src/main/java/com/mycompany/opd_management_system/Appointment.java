@@ -3,44 +3,83 @@ package com.mycompany.opd_management_system;
 import java.util.Date;
 
 public class Appointment {
-    private static int hospitalId;
-    private static int patientId;
-    private static int doctorId;
-    private static String timeslot;
-    private static String status;
 
-    Appointment(int hospitalId, int patientId, int doctorId, String timeSlot){
+    private int appointmentId;
+    private int hospitalId;
+    private int patientId;
+    private int doctorId;
+    private String timeslot;
+    private String status;
+    private Boolean isCovidSuspect;
+    private Boolean isAppointmentPushed;
+    private Boolean isAppointmentCancelled;
+
+    public Appointment(int appointmentId, int hospitalId, int patientId, int doctorId, String timeSlot){
+        this.appointmentId = appointmentId;
         this.hospitalId = hospitalId;
         this.patientId = patientId;
         this.doctorId = doctorId;
         this.timeslot = timeSlot;
     }
 
-    public static int getHospitalId() {
+    public int getAppointmentId() {
+        return appointmentId;
+    }
+
+    public void setAppointmentId(int appointmentId) {
+        this.appointmentId = appointmentId;
+    }
+
+    public int getHospitalId() {
         return hospitalId;
     }
 
-    public static int getPatientId() {
+    public int getPatientId() {
         return patientId;
     }
 
-    public static int getDoctorId() {
+    public int getDoctorId() {
         return doctorId;
     }
 
-    public static String getTimeslot() {
+    public String getTimeslot() {
         return timeslot;
     }
 
-    public static void setTimeslot(String slot) {
+    public void setTimeslot(String slot) {
         timeslot = slot;
     }
 
-    public static String getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public static void setStatus(String status) {
-        Appointment.status = status;
+    public void setStatus(String status) {
+        this.status = status;
     }
+
+    public Boolean getCovidSuspect() {
+        return isCovidSuspect;
+    }
+
+    public void setCovidSuspect(Boolean covidSuspect) {
+        isCovidSuspect = covidSuspect;
+    }
+
+    public Boolean getAppointmentPushed() {
+        return isAppointmentPushed;
+    }
+
+    public void setAppointmentPushed(Boolean appointmentPushed) {
+        isAppointmentPushed = appointmentPushed;
+    }
+
+    public Boolean getAppointmentCancelled() {
+        return isAppointmentCancelled;
+    }
+
+    public void setAppointmentCancelled(Boolean appointmentCancelled) {
+        isAppointmentCancelled = appointmentCancelled;
+    }
+
 }

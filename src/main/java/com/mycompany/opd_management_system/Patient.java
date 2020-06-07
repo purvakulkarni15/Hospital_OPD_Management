@@ -1,14 +1,13 @@
 package com.mycompany.opd_management_system;
 
 public class Patient {
-    private static int patientId;
-    private static String name;
-    private static int age;
-    private static String gender;
-    private static String illness;
-    private static String emailId;
-    private static String contactNumber;
-    private static String isCovidSuspect;
+    private int patientId;
+    private String name;
+    private int age;
+    private String gender;
+    private String illness;
+    private String emailId;
+    private String contactNumber;
 
     public Patient(int patientId, String name, int age, String gender, String illness, String emailId, String contactNumber) {
         this.patientId = patientId;
@@ -20,40 +19,36 @@ public class Patient {
         this.contactNumber = contactNumber;
     }
 
-    public static int getPatientId() {
+    public int getPatientId() {
         return patientId;
     }
 
-    public static void setPatientId(int id) {
+    public void setPatientId(int id) {
         patientId = id;
     }
 
-    public static String getName() {
+    public String getName() {
         return name;
     }
 
-    public static int getAge() {
+    public int getAge() {
         return age;
     }
 
-    public static String getGender() {
+    public String getGender() {
         return gender;
     }
 
-    public static String getIllness() {
+    public String getIllness() {
         return illness;
     }
 
-    public static String getEMailId() {
+    public String getEMailId() {
         return emailId;
     }
 
-    public static String getContactNumber() {
+    public String getContactNumber() {
         return contactNumber;
-    }
-
-    public static String getIsCovidSuspect() {
-        return isCovidSuspect;
     }
 
 }

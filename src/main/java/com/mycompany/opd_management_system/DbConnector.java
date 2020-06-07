@@ -8,41 +8,135 @@ public class DbConnector {
     private static ArrayList<Hospital>hospitalTable;
     private static ArrayList<Patient>patientTable;
     private static ArrayList<Appointment>appointmentTable;
+    private static ArrayList<Emergency>emergencyTable;
 
-    static{
+    public DbConnector(){
         doctorTable = new ArrayList<>();
         hospitalTable = new ArrayList<>();
         patientTable = new ArrayList<>();
         appointmentTable =  new ArrayList<>();
+        emergencyTable = new ArrayList<>();
     }
 
-    public static String addToHospitalTable(Hospital hospital){
+    public static ArrayList<Doctor> getDoctorTable() {
+        return doctorTable;
+    }
+
+    public static ArrayList<Hospital> getHospitalTable() {
+        return hospitalTable;
+    }
+
+    public static ArrayList<Patient> getPatientTable() {
+        return patientTable;
+    }
+
+    public static ArrayList<Appointment> getAppointmentTable() {
+        return appointmentTable;
+    }
+
+    public static ArrayList<Emergency> getEmergencyTable() { return emergencyTable; }
+
+    /*
+    * Insert Queries
+    */
+
+    public static int addToHospitalTable(Hospital hospital){
+
         int hospitalId;
         if(hospitalTable.isEmpty()){
-            hospitalId = 1;
+            hospitalId = 0;
         }else {
-            hospitalId= hospitalTable.size()-1;
+            hospitalId = hospitalTable.size();
         }
+
         hospital.setHospitalId(hospitalId);
         hospitalTable.add(hospital);
-        return "Data added successfully";
+        return hospitalId;
     }
 
-    public static String addToDoctorTable(Doctor doctor){
+    public static int addToDoctorTable(Doctor doctor){
 
         int doctorId;
         if(doctorTable.isEmpty()){
-            doctorId = 1;
+            doctorId = 0;
         }else {
-            doctorId = doctorTable.size()-1;
+            doctorId = doctorTable.size();
         }
         doctor.setDoctorId(doctorId);
         doctorTable.add(doctor);
 
-        return "Data added successfully";
+        return doctorId;
+    }
+
+    public static int addToPatientTable(Patient patient){
+        int patientId;
+        if(patientTable.isEmpty()){
+            patientId = 0;
+        }else {
+            patientId = patientTable.size();
+        }
+        patient.setPatientId(patientId);
+        patientTable.add(patient);
+
+        return patientId;
+    }
+
+    public static int addToAppointmentTable(Appointment appointment){
+        int appointmentId;
+        if(appointmentTable.isEmpty()){
+            appointmentId = 0;
+        }else {
+            appointmentId = appointmentTable.size();
+        }
+        appointment.setAppointmentId(appointmentId);
+        appointmentTable.add(appointment);
+        return appointmentId;
+    }
+
+    public static int addToEmergencyTable(Emergency emergency){
+        int emergencyId;
+        if(emergencyTable.isEmpty()){
+            emergencyId = 0;
+        }else {
+            emergencyId = emergencyTable.size();
+        }
+        emergency.setEmergencyId(emergencyId);
+        emergencyTable.add(emergency);
+        return emergencyId;
+    }
+
+    /*
+     * Update Queries
+     */
+
+    public static void updateToPatientTable(Patient patient){
+        for(int i = 0; i < patientTable.size(); i++){
+            if(patientTable.get(i).getPatientId() == patient.getPatientId()){
+                patientTable.remove(i);
+                patientTable.add(i, patient);
+            }
+        }
+    }
+
+    public static void updateAppointmentTab(Appointment appointment){
+        for(int i = 0; i < appointmentTable.size(); i++){
+            if(appointmentTable.get(i).getAppointmentId() == appointment.getAppointmentId()){
+                appointmentTable.remove(i);
+                appointmentTable.add(i, appointment);
+            }
+        }
+    }
+
+    /*
+    * Select Queries
+    */
+
+    public static ArrayList<Hospital> getListFromHospTab(){
+        return getHospitalTable();
     }
 
     public static ArrayList<Doctor> getListWhereHospIdEqualsFromDocTab(int hospitalId){
+
         ArrayList<Doctor> doctorList = new ArrayList<>();
 
         for(int i = 0; i < doctorTable.size(); i++){
@@ -54,89 +148,37 @@ public class DbConnector {
         return doctorList;
     }
 
-    public static String addToPatientTable(Patient patient){
-        int patientId;
-        if(patientTable.isEmpty()){
-            patientId = 1;
-        }else {
-            patientId = patientTable.size()-1;
-        }
-        patient.setPatientId(patientId);
-        patientTable.add(patient);
-
-        return "Data added successfully";
-    }
-
-    public static String addToAppointmentTable(Appointment appointment){
-        appointmentTable.add(appointment);
-        return "Data added successfully";
-    }
-
-    public static int getIdWhereNameEqualsFromHospTab(String hospitalName){
-        for(int i = 0; i < hospitalTable.size(); i++){
-
-            if(hospitalTable.get(i).getName().equals(hospitalName)){
-               return hospitalTable.get(i).getHospitalId();
-            }
-        }
-        return -1;
-    }
-
-    public static Doctor getAllWhereNameAndHospIdEqualsFromDocTab(String doctorName, int hospitalId){
-
-        for(int i = 0; i < doctorTable.size(); i++){
-            if(doctorTable.get(i).getName().equals(doctorName) && doctorTable.get(i).getHospitalId() == hospitalId){
-                return doctorTable.get(i);
-            }
-        }
-        return null;
-    }
-
-    public static int getCountWhereSlotEqualsFromAppTab(String timeslot){
+    public static int getCountWhereSlotAndIdEqualsFromAppTab(int doctorId, String timeslot){
         int count = 0;
 
         for(int i = 0; i < appointmentTable.size(); i++){
-            if(appointmentTable.get(i).getTimeslot().equals(timeslot)){
+            if(appointmentTable.get(i).getTimeslot().equals(timeslot) && appointmentTable.get(i).getDoctorId() == doctorId){
                 count++;
             }
         }
-
         return count;
     }
 
-    public static ArrayList<Appointment> getAllWhereSlotEqualsFromAppTab(String timeslot){
-        ArrayList<Appointment>appointmentList = new ArrayList<>();
-
-        for(int i = 0; i < appointmentTable.size(); i++){
-            if(appointmentTable.get(i).getTimeslot().equals(timeslot)){
-                appointmentList.add(appointmentTable.get(i));
-            }
-        }
-        return appointmentList;
-    }
-
-    public static String updateAppointmentTab(int hospitalId, int patientId, int doctorId, Appointment appointment){
-        for(int i = 0; i < appointmentTable.size(); i++){
-            if(appointmentTable.get(i).getPatientId() == patientId && appointmentTable.get(i).getHospitalId() == hospitalId && appointmentTable.get(i).getDoctorId() == doctorId){
-                appointmentTable.remove(i);
-                appointmentTable.add(i, appointment);
-            }
-        }
-
-        return "Updated Appointment table successfully";
-    }
-
-    public static ArrayList<Appointment> getAppWhereDocIdAndSlotEqualsFromAppTab(int doctorId, String slot){
+    public ArrayList<Appointment> getAppWhereDocIdAndSlotEqualsFromAppTab(int doctorId, String slot){
 
         ArrayList<Appointment> appointmentList = new ArrayList<>();
 
         for(int i = 0; i < appointmentTable.size(); i++ ){
-            if(appointmentTable.get(i).getDoctorId()==doctorId && appointmentTable.get(i).getTimeslot().equals(slot)){
+            if(appointmentTable.get(i).getDoctorId() == doctorId && appointmentTable.get(i).getTimeslot().equals(slot)){
                 appointmentList.add(appointmentTable.get(i));
             }
         }
 
         return appointmentList;
+    }
+
+    public static int getPatientIdFromEmail(String email){
+        for(int i = 0; i < patientTable.size(); i++){
+            if(patientTable.get(i).getEMailId().equals(email)){
+                return patientTable.get(i).getPatientId();
+            }
+        }
+        return -1;
     }
 
     public static Patient getAllWherePatIdEqualsFromPatTab(int patientId){
@@ -146,4 +188,5 @@ public class DbConnector {
     public static Doctor getAllWhereIdEqualsFromDocTab(int doctorId){
         return doctorTable.get(doctorId);
     }
+
 }
