@@ -181,6 +181,17 @@ public class DbConnector {
         return -1;
     }
 
+    public static ArrayList<Appointment> getListWherePatIdEqualsFromAppTab(int patientId){
+        ArrayList<Appointment> appointmentList = new ArrayList<>();
+
+        for(int i = 0; i < appointmentTable.size(); i++ ){
+            if(appointmentTable.get(i).getPatientId() == patientId){
+                appointmentList.add(appointmentTable.get(i));
+            }
+        }
+        return appointmentList;
+    }
+
     public static Patient getAllWherePatIdEqualsFromPatTab(int patientId){
         return patientTable.get(patientId);
     }

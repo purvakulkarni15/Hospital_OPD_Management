@@ -160,20 +160,38 @@ public class TestBaseController {
         DbConnector.addToAppointmentTable(new Appointment(2,0,2,1,"07/06/2020 11:00:00 AM"));
         DbConnector.addToAppointmentTable(new Appointment(3,0,3,1,"07/06/2020 11:30:00 AM"));
         DbConnector.addToAppointmentTable(new Appointment(4,0,4,1,"07/06/2020 11:30:00 AM"));
-        DbConnector.addToAppointmentTable(new Appointment(0,0,0,1,"07/06/2020 11:30:00 AM"));
-        DbConnector.addToAppointmentTable(new Appointment(0,0,0,1,"08/06/2020 11:00:00 AM"));
-        DbConnector.addToAppointmentTable(new Appointment(1,0,1,1,"08/06/2020 11:00:00 AM"));
-        DbConnector.addToAppointmentTable(new Appointment(2,0,2,1,"08/06/2020 11:00:00 AM"));
-        DbConnector.addToAppointmentTable(new Appointment(3,0,3,1,"08/06/2020 11:30:00 AM"));
-        DbConnector.addToAppointmentTable(new Appointment(4,0,4,1,"08/06/2020 11:30:00 AM"));
-        DbConnector.addToAppointmentTable(new Appointment(0,0,0,1,"09/06/2020 11:00:00 AM"));
-        DbConnector.addToAppointmentTable(new Appointment(4,0,4,1,"09/06/2020 11:00:00 AM"));
-        DbConnector.addToAppointmentTable(new Appointment(0,0,0,1,"09/06/2020 11:00:00 AM"));
+        DbConnector.addToAppointmentTable(new Appointment(5,0,0,1,"07/06/2020 11:30:00 AM"));
+        DbConnector.addToAppointmentTable(new Appointment(6,0,0,1,"08/06/2020 11:00:00 AM"));
+        DbConnector.addToAppointmentTable(new Appointment(7,0,1,1,"08/06/2020 11:00:00 AM"));
+        DbConnector.addToAppointmentTable(new Appointment(8,0,2,1,"08/06/2020 11:00:00 AM"));
+        DbConnector.addToAppointmentTable(new Appointment(9,0,3,1,"08/06/2020 11:30:00 AM"));
+        DbConnector.addToAppointmentTable(new Appointment(10,0,4,1,"08/06/2020 11:30:00 AM"));
+        DbConnector.addToAppointmentTable(new Appointment(11,0,0,1,"09/06/2020 11:00:00 AM"));
+        DbConnector.addToAppointmentTable(new Appointment(12,0,4,1,"09/06/2020 11:00:00 AM"));
+        DbConnector.addToAppointmentTable(new Appointment(13,0,0,1,"09/06/2020 11:00:00 AM"));
 
 
         System.out.println(baseController.getNextAvailableSlot(1));
 
     }
 
+    @Test
+    public void testGetAppointmentList(){
+        DbConnector.addToAppointmentTable(new Appointment(0,0,0,1,"07/06/2020 11:00:00 AM"));
+        DbConnector.addToAppointmentTable(new Appointment(1,0,1,1,"07/06/2020 11:00:00 AM"));
+        DbConnector.addToAppointmentTable(new Appointment(2,0,2,1,"07/06/2020 11:00:00 AM"));
+        DbConnector.addToAppointmentTable(new Appointment(3,0,3,1,"07/06/2020 11:30:00 AM"));
+        DbConnector.addToAppointmentTable(new Appointment(4,0,0,1,"07/06/2020 11:30:00 AM"));
+        DbConnector.addToAppointmentTable(new Appointment(5,0,1,1,"07/06/2020 11:30:00 AM"));
+        DbConnector.addToAppointmentTable(new Appointment(6,0,2,1,"08/06/2020 11:00:00 AM"));
+        DbConnector.addToAppointmentTable(new Appointment(7,0,3,1,"08/06/2020 11:00:00 AM"));
+        DbConnector.addToAppointmentTable(new Appointment(8,0,0,1,"08/06/2020 11:00:00 AM"));
+        DbConnector.addToAppointmentTable(new Appointment(9,0,1,1,"08/06/2020 11:30:00 AM"));
+        DbConnector.addToAppointmentTable(new Appointment(10,0,2,1,"08/06/2020 11:30:00 AM"));
+        DbConnector.addToAppointmentTable(new Appointment(11,0,3,1,"09/06/2020 11:00:00 AM"));
+        DbConnector.addToAppointmentTable(new Appointment(12,0,0,1,"09/06/2020 11:00:00 AM"));
+        DbConnector.addToAppointmentTable(new Appointment(13,0,1,1,"09/06/2020 11:00:00 AM"));
 
+        System.out.println(baseController.getAppointmentList(0));
+    }
 }

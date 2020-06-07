@@ -286,7 +286,7 @@ public class BaseController {
         return "Data stored successfully";
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/setAppointmentData", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.POST, value = "/getNextAvailableSlot", produces = MediaType.APPLICATION_JSON_VALUE)
     public static String getNextAvailableSlot(int doctorId){
 
         String availableTimeslot="";
@@ -307,5 +307,28 @@ public class BaseController {
         return availableTimeslot;
     }
 
+    @RequestMapping(method = RequestMethod.POST, value = "/getAppointments", produces = MediaType.APPLICATION_JSON_VALUE)
+    public static String getAppointmentList(int patientId){
+        ArrayList<Appointment> appointmentList = dbConnector.getListWherePatIdEqualsFromAppTab(patientId);
+
+        JSONArray jsonArray = new JSONArray();
+        for(int i = 0; i < appointmentList.size(); i++){
+            JSONObject object = new JSONObject();
+
+            try {
+
+                object.put("AppointmentId", appointmentList.get(i).getAppointmentId());
+                object.put("Timeslot", appointmentList.get(i).getTimeslot());
+
+                jsonArray.put(object);
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+
+        return jsonArray.toString();
+
+    }
 
 }

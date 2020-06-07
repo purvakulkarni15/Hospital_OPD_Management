@@ -98,9 +98,9 @@ public class BaseService {
 
     public static void notifyPatientByEmail(String email, String name, String oldTimeSlot, String newTimeslot){
 
-        System.out.println(name + " " + oldTimeSlot + " " + newTimeslot);
+        /*System.out.println(name + " " + oldTimeSlot + " " + newTimeslot);
 
-        /*Properties properties = System.getProperties();
+        Properties properties = System.getProperties();
         properties.setProperty("mail.smtp.host", "localhost");
         Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
