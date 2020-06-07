@@ -1,11 +1,9 @@
 package com.mycompany.opd_management_system;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -28,8 +26,8 @@ public class BaseController {
         return String.valueOf(patientId);
     }
 
-    @RequestMapping(method=RequestMethod.GET, value="/setPatientData", produces = MediaType.APPLICATION_JSON_VALUE)
-    public static String addPatientAndAppointmentData(String appointmentObject){
+    @RequestMapping(method=RequestMethod.POST, value="/setPatientData", produces = MediaType.APPLICATION_JSON_VALUE)
+    public static String addPatientAndAppointmentData(@RequestBody String appointmentObject){
 
         int patientId = -1;
         int doctorId = -1;
@@ -56,7 +54,7 @@ public class BaseController {
             emailId = jsonObject.getString("EmailId");
             contactNumber = jsonObject.getString("MobileNumber");
             timeslot = jsonObject.getString("Timeslot");
-            date = jsonObject.getString("Date");
+            date = jsonObject.getString("DateString");
 
         }catch(Exception e){
             e.printStackTrace();
@@ -78,8 +76,8 @@ public class BaseController {
         return "Data added successfully";
     }
 
-    @RequestMapping(method=RequestMethod.GET, value="/addHospitalData", produces = MediaType.APPLICATION_JSON_VALUE)
-    public static String addHospitalData(String hospitalObj){
+    @RequestMapping(method=RequestMethod.POST, value="/addHospitalData", produces = MediaType.APPLICATION_JSON_VALUE)
+    public static String addHospitalData(@RequestBody String hospitalObj){
 
         String hospitalName;
         int hospitalId;
@@ -156,7 +154,7 @@ public class BaseController {
         ArrayList<String>vacantSlots =  new ArrayList<>();
         ArrayList<Integer> vacancies = new ArrayList<>();
 
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
+        DateFormat dateFormat = new SimpleDateFormat("MM/yyyydd/MM/yyyy hh:mm:ss a");
 
         String startStr = date + " " + doctor.getStartTime();
         String endStr = date + " " + doctor.getEndTime();
@@ -209,9 +207,9 @@ public class BaseController {
                 object.put("DoctorId", String.valueOf(doctorList.get(i).getDoctorId()));
                 object.put("DoctorName", doctorList.get(i).getName());
                 object.put("DoctorSpeciality", doctorList.get(i).getSpeciality());
-                object.put("StartTime", doctorList.get(i).getStartTime());
-                object.put("EndTime", doctorList.get(i).getEndTime());
-                object.put("SlotTimeInMin", doctorList.get(i).getSlotTimeInMin());
+                object.put("OPDStartTimeString", doctorList.get(i).getStartTime());
+                object.put("OPDEndTimeString", doctorList.get(i).getEndTime());
+                object.put("SlotDuration", doctorList.get(i).getSlotTimeInMin());
                 object.put("Capacity", doctorList.get(i).getCapacity());
                 jsonArray.put(object);
 
@@ -345,7 +343,7 @@ public class BaseController {
         return "Deleted successfully";
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/getPushedAppointmentList", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET, value = "/getPushedAppointmentList", produces = MediaType.APPLICATION_JSON_VALUE)
     public static String getPushedAppointmentList(int patientId){
         ArrayList<Appointment> pushedAppointmentList =  new ArrayList<>();
 
@@ -357,7 +355,7 @@ public class BaseController {
 
             try {
 
-                object.put("AppointmentId", pushedAppointmentList.get(i).getAppointmentId());
+                object.put("AppointmentNumber", pushedAppointmentList.get(i).getAppointmentId());
                 object.put("Timeslot", pushedAppointmentList.get(i).getTimeslot());
 
                 jsonArray.put(object);
@@ -370,7 +368,7 @@ public class BaseController {
         return jsonArray.toString();
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/getCancelledAppointmentList", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET, value = "/getCancelledAppointmentList", produces = MediaType.APPLICATION_JSON_VALUE)
     public static String getCancelledAppointmentList(int patientId){
         ArrayList<Appointment> cancelledAppointmentList =  new ArrayList<>();
 
@@ -382,7 +380,7 @@ public class BaseController {
 
             try {
 
-                object.put("AppointmentId", cancelledAppointmentList.get(i).getAppointmentId());
+                object.put("AppointmentNumber", cancelledAppointmentList.get(i).getAppointmentId());
                 object.put("Timeslot", cancelledAppointmentList.get(i).getTimeslot());
 
                 jsonArray.put(object);
@@ -395,7 +393,7 @@ public class BaseController {
         return jsonArray.toString();
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/getCovidSuspectsList", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET, value = "/getCovidSuspectsList", produces = MediaType.APPLICATION_JSON_VALUE)
     public static String getCovidSuspectsList(int hospitalId, String date){
         ArrayList<Appointment> covidSuspectList =  new ArrayList<>();
 
@@ -407,7 +405,7 @@ public class BaseController {
 
             try {
 
-                object.put("AppointmentId", covidSuspectList.get(i).getAppointmentId());
+                object.put("AppointmentNumber", covidSuspectList.get(i).getAppointmentId());
                 object.put("Timeslot", covidSuspectList.get(i).getTimeslot());
                 object.put("DoctorId", covidSuspectList.get(i).getDoctorId());
                 jsonArray.put(object);
@@ -421,20 +419,20 @@ public class BaseController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/checkAdminLogin", produces = MediaType.APPLICATION_JSON_VALUE)
-    public static boolean checkAdminLogin(String emailId, String password){
-
-        return dbConnector.checkAdminCredentials(emailId, password);
+    public static boolean checkAdminLogin(@RequestBody String body) throws JSONException {
+        JSONObject jsonObject = new JSONObject(body);
+        return dbConnector.checkAdminCredentials(jsonObject.getString("emailId"), jsonObject.getString("password"));
 
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/checkPatientLogin", produces = MediaType.APPLICATION_JSON_VALUE)
-    public static boolean checkPatientLogin(String emailId, String password){
-
-        return dbConnector.checkPatientCredentials(emailId, password);
+    public static boolean checkPatientLogin(@RequestBody String body) throws JSONException {
+        JSONObject jsonObject = new JSONObject(body);
+        return dbConnector.checkPatientCredentials(jsonObject.getString("emailId"), jsonObject.getString("password"));
 
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/getAdminDetails", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET, value = "/getAdminDetails", produces = MediaType.APPLICATION_JSON_VALUE)
     public static String getAdminDetails(String emailId){
 
         Admin admin = dbConnector.getAdminWhereEmailIdEqualsFromAdminTab(emailId);

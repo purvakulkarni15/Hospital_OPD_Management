@@ -24,9 +24,9 @@ public class DbConnector {
 
     private void populateAdminTable(){
         adminTable.add(new Admin(0, 0, "purva.1497@gmail.com", "123"));
-        adminTable.add(new Admin(0, 1, "purva.1497@gmail.com", "123"));
-        adminTable.add(new Admin(0, 2, "purva.1497@gmail.com", "123"));
-        adminTable.add(new Admin(0, 3, "purva.1497@gmail.com", "123"));
+        adminTable.add(new Admin(1, 1, "purva.14975@gmail.com", "1234"));
+        adminTable.add(new Admin(2, 2, "purva.14976@gmail.com", "1235"));
+        adminTable.add(new Admin(3, 3, "purva.14977@gmail.com", "1236"));
     }
 
     public static ArrayList<Doctor> getDoctorTable() {
