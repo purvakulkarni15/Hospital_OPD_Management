@@ -8,6 +8,7 @@ public class Patient {
     private String illness;
     private String emailId;
     private String contactNumber;
+    private String password;
 
     public Patient(int patientId, String name, int age, String gender, String illness, String emailId, String contactNumber) {
         this.patientId = patientId;

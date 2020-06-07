@@ -10,9 +10,9 @@ public class Appointment {
     private int doctorId;
     private String timeslot;
     private String status;
-    private Boolean isCovidSuspect;
-    private Boolean isAppointmentPushed;
-    private Boolean isAppointmentCancelled;
+    private boolean isCovidSuspect;
+    private boolean isAppointmentPushed;
+    private boolean isAppointmentCancelled;
 
     public Appointment(int appointmentId, int hospitalId, int patientId, int doctorId, String timeSlot){
         this.appointmentId = appointmentId;
@@ -58,27 +58,27 @@ public class Appointment {
         this.status = status;
     }
 
-    public Boolean getCovidSuspect() {
+    public boolean getCovidSuspect() {
         return isCovidSuspect;
     }
 
-    public void setCovidSuspect(Boolean covidSuspect) {
+    public void setCovidSuspect(boolean covidSuspect) {
         isCovidSuspect = covidSuspect;
     }
 
-    public Boolean getAppointmentPushed() {
+    public boolean getAppointmentPushed() {
         return isAppointmentPushed;
     }
 
-    public void setAppointmentPushed(Boolean appointmentPushed) {
+    public void setAppointmentPushed(boolean appointmentPushed) {
         isAppointmentPushed = appointmentPushed;
     }
 
-    public Boolean getAppointmentCancelled() {
+    public boolean getAppointmentCancelled() {
         return isAppointmentCancelled;
     }
 
-    public void setAppointmentCancelled(Boolean appointmentCancelled) {
+    public void setAppointmentCancelled(boolean appointmentCancelled) {
         isAppointmentCancelled = appointmentCancelled;
     }
 

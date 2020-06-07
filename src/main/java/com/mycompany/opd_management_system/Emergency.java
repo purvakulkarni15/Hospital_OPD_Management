@@ -3,13 +3,15 @@ package com.mycompany.opd_management_system;
 public class Emergency {
 
     int emergencyId;
+    int hospitalId;
     int doctorId;
     String from;
     String to;
     String date;
 
-    public Emergency(int doctorId, String from, String to, String date){
+    public Emergency(int doctorId, int hospitalId, String from, String to, String date){
         this.doctorId = doctorId;
+        this.hospitalId = hospitalId;
         this.from = from;
         this.to = to;
         this.date = date;

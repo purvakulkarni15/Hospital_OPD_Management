@@ -9,6 +9,7 @@ public class DbConnector {
     private static ArrayList<Patient>patientTable;
     private static ArrayList<Appointment>appointmentTable;
     private static ArrayList<Emergency>emergencyTable;
+    private static ArrayList<Admin>adminTable;
 
     public DbConnector(){
         doctorTable = new ArrayList<>();
@@ -16,6 +17,16 @@ public class DbConnector {
         patientTable = new ArrayList<>();
         appointmentTable =  new ArrayList<>();
         emergencyTable = new ArrayList<>();
+        adminTable = new ArrayList<>();
+
+        populateAdminTable();
+    }
+
+    private void populateAdminTable(){
+        adminTable.add(new Admin(0, 0, "purva.1497@gmail.com", "123"));
+        adminTable.add(new Admin(0, 1, "purva.1497@gmail.com", "123"));
+        adminTable.add(new Admin(0, 2, "purva.1497@gmail.com", "123"));
+        adminTable.add(new Admin(0, 3, "purva.1497@gmail.com", "123"));
     }
 
     public static ArrayList<Doctor> getDoctorTable() {
@@ -128,6 +139,14 @@ public class DbConnector {
     }
 
     /*
+     * Delete Queries
+     */
+
+    public static void deleteAppWhereAppIdEqualsFromAppTab(int appointmentId){
+        appointmentTable.remove(appointmentId);
+    }
+
+    /*
     * Select Queries
     */
 
@@ -190,6 +209,69 @@ public class DbConnector {
             }
         }
         return appointmentList;
+    }
+
+    public static ArrayList<Appointment> getListWherePatIdAndIsPushedEqualsFromAppTab(int patientId, boolean isAppPushed){
+        ArrayList<Appointment> pushedAppointmentList = new ArrayList<>();
+
+        for(int i = 0; i < appointmentTable.size(); i++ ){
+            if(appointmentTable.get(i).getPatientId() == patientId && appointmentTable.get(i).getAppointmentPushed()==isAppPushed){
+                pushedAppointmentList.add(appointmentTable.get(i));
+            }
+        }
+        return pushedAppointmentList;
+    }
+
+    public static ArrayList<Appointment> getListWherePatIdAndIsCancelledEqualsFromAppTab(int patientId, boolean isAppCancelled){
+        ArrayList<Appointment> cancelledAppointmentList = new ArrayList<>();
+
+        for(int i = 0; i < appointmentTable.size(); i++ ){
+            if(appointmentTable.get(i).getPatientId() == patientId && appointmentTable.get(i).getAppointmentCancelled()==isAppCancelled){
+                cancelledAppointmentList.add(appointmentTable.get(i));
+            }
+        }
+        return cancelledAppointmentList;
+    }
+
+    public static ArrayList<Appointment> getListWhereHospIdAndIsCovidAndDateEqualsFromAppTab(int hospitalId, boolean isCovidSuspect, String date){
+        ArrayList<Appointment> covidSuspectList = new ArrayList<>();
+
+        for(int i = 0; i < appointmentTable.size(); i++ ){
+            if(appointmentTable.get(i).getHospitalId() == hospitalId && appointmentTable.get(i).getCovidSuspect()==isCovidSuspect && appointmentTable.get(i).getTimeslot().contains(date)){
+                covidSuspectList.add(appointmentTable.get(i));
+            }
+        }
+        return covidSuspectList;
+    }
+
+    public static Admin getAdminWhereEmailIdEqualsFromAdminTab(String emailId){
+
+        for(int i = 0; i < adminTable.size(); i++) {
+            if (adminTable.get(i).getEmailId().equals(emailId)){
+                return adminTable.get(i);
+            }
+        }
+        return null;
+    }
+
+    public static boolean checkAdminCredentials(String emailId, String password){
+
+        for(int i = 0; i < adminTable.size(); i++) {
+            if (adminTable.get(i).getEmailId().equals(emailId) && adminTable.get(i).getPassword().equals(password)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean checkPatientCredentials(String emailId, String password){
+
+        for(int i = 0; i < patientTable.size(); i++) {
+            if (patientTable.get(i).getEMailId().equals(emailId) && adminTable.get(i).getPassword().equals(password)){
+                return true;
+            }
+        }
+        return false;
     }
 
     public static Patient getAllWherePatIdEqualsFromPatTab(int patientId){
