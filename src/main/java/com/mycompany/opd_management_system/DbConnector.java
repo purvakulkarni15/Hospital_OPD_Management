@@ -244,6 +244,18 @@ public class DbConnector {
         return covidSuspectList;
     }
 
+    public static ArrayList<Emergency> getListWhereHospIdEqualsFromEmerTab(int hospitalId){
+        ArrayList<Emergency> emergencyList = new ArrayList<>();
+
+        for(int i = 0; i < emergencyTable.size(); i++){
+
+            if(emergencyTable.get(i).getHospitalId() == hospitalId){
+                emergencyList.add(emergencyTable.get(i));
+            }
+        }
+        return emergencyList;
+    }
+
     public static Admin getAdminWhereEmailIdEqualsFromAdminTab(String emailId){
 
         for(int i = 0; i < adminTable.size(); i++) {

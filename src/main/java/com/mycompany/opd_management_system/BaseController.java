@@ -258,7 +258,7 @@ public class BaseController {
 
         Doctor doctor = dbConnector.getAllWhereIdEqualsFromDocTab(doctorId);
 
-        dbConnector.addToEmergencyTable(new Emergency(doctorId, doctor.getHospitalId(), date, fromStr, toStr));
+        dbConnector.addToEmergencyTable(new Emergency(doctorId, doctor.getHospitalId(), doctor.getName(), date, fromStr, toStr));
 
         fromStr = date+" "+fromStr;
         toStr = date+" "+toStr;
@@ -450,4 +450,26 @@ public class BaseController {
 
         return  jsonObject.toString();
     }
+
+    public static String getEmergencyList(int hospitalId){
+        ArrayList<Emergency> emergencyList = dbConnector.getListWhereHospIdEqualsFromEmerTab(hospitalId);
+
+        JSONArray jsonArray = new JSONArray();
+        for(int i = 0; i < emergencyList.size(); i++){
+            try {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("DoctorId", emergencyList.get(i).getDoctorId());
+                jsonObject.put("DoctorName", emergencyList.get(i).getDoctorName());
+                jsonObject.put("From", emergencyList.get(i).getFrom());
+                jsonObject.put("To", emergencyList.get(i).getTo());
+
+                jsonArray.put(jsonObject);
+            }catch (Exception e){
+
+            }
+        }
+        return jsonArray.toString();
+
+    }
+
 }

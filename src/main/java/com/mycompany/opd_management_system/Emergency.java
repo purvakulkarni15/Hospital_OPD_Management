@@ -2,16 +2,18 @@ package com.mycompany.opd_management_system;
 
 public class Emergency {
 
-    int emergencyId;
-    int hospitalId;
-    int doctorId;
-    String from;
-    String to;
-    String date;
+    private int emergencyId;
+    private int hospitalId;
+    private int doctorId;
+    private String doctorName;
+    private String from;
+    private String to;
+    private String date;
 
-    public Emergency(int doctorId, int hospitalId, String from, String to, String date){
+    public Emergency(int doctorId, int hospitalId, String doctorName, String from, String to, String date){
         this.doctorId = doctorId;
         this.hospitalId = hospitalId;
+        this.doctorName = doctorName;
         this.from = from;
         this.to = to;
         this.date = date;
@@ -25,12 +27,28 @@ public class Emergency {
         this.emergencyId = emergencyId;
     }
 
+    public int getHospitalId() {
+        return hospitalId;
+    }
+
+    public void setHospitalId(int hospitalId) {
+        this.hospitalId = hospitalId;
+    }
+
     public int getDoctorId() {
         return doctorId;
     }
 
     public void setDoctorId(int doctorId) {
         this.doctorId = doctorId;
+    }
+
+    public String getDoctorName() {
+        return doctorName;
+    }
+
+    public void setDoctorName(String doctorName) {
+        this.doctorName = doctorName;
     }
 
     public String getFrom() {
